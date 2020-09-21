@@ -35,6 +35,7 @@ class NHC2Platform implements DynamicPlatformPlugin {
     .Characteristic;
 
   private readonly accessories: PlatformAccessory[] = [];
+  private readonly suppressedAccessories: string[] = [];
   private readonly nhc2: NHC2;
 
   constructor(
@@ -42,7 +43,13 @@ class NHC2Platform implements DynamicPlatformPlugin {
     private config: PlatformConfig,
     private api: API,
   ) {
-    this.config = config;
+    this.suppressedAccessories = config.suppressedAccessories || [];
+    if(this.suppressedAccessories) {
+      log.info("Suppressing accessories: ");
+      this.suppressedAccessories.forEach(function(acc) {
+        log.info("  - " + acc);
+      });
+    }
     this.nhc2 = new NHC2("mqtts://" + config.host, {
       port: config.port || 8884,
       clientId: config.clientId || "NHC2-homebridge",
@@ -115,7 +122,7 @@ class NHC2Platform implements DynamicPlatformPlugin {
     Object.keys(mapping).forEach(model => {
       const config = mapping[model];
       const accs = accessories.filter(acc =>
-        ! this.config.suppressedAccessories.includes(acc.Uuid)
+        ! this.suppressedAccessories.includes(acc.Uuid)
         &&
         acc.Model === model
       );
