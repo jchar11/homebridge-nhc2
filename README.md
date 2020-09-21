@@ -98,6 +98,26 @@ Add the plugin to the **platforms** section in your homebridge configuration fil
 > If multiple connections with the same ClientId are running these will continuously 
 > disconnect/reconnect and may skip MQTT messages.
 
+### More Configuration Options
+
+Besides the required `host` & `password` and other connection-related configuraion options, the configuration also allows for suppressing accessories:
+
+```json
+  "platforms": [
+    {
+      "platform" : "NHC2",
+      "name" : "NHC2",
+      "host": "<IP_ADDRESS_OF_YOUR_CONNECTED_CONTROLLER>",
+      "password": "<PASSWORD_PROVIDED_BY_MYNIKOHOMECONTROLL>",
+      "suppressedAccessories": [
+          "fa33d687-9225-4f9e-b55e-013abb69b42e"
+      ]
+    }
+  ]
+```
+
+This allows for not exposing certain accessories to Homebrigde (and therefore also the Home app). This feature can be useful when sharing access to the Home app with others. 
+
 ## Plugin Development
 
 When working on this plugin, you'll want Homebridge to load it from your development directory instead of publishing it to `npm` each time.
